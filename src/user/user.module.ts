@@ -4,6 +4,7 @@ import { UserController } from './controllers/user.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { userEntity } from './models/user.entity';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { BraintreeProvider } from './braintree.provider';
 
 @Module({
   imports:[
@@ -12,8 +13,9 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
     secret: 'myLongAndSecureSecretKey123!@#$', // Provide your secret key here
     signOptions: { expiresIn: '1d' }, // Adjust expiration as needed
   }),
+  
 ],
-  providers: [UserService],
+  providers: [UserService,BraintreeProvider],
   controllers: [UserController]
 })
 export class UserModule {}

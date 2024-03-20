@@ -6,7 +6,6 @@ import { UpdateResult } from 'typeorm';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 import { Response,Request } from 'express';
-import * as cookieParser from 'cookie-Parser'
 
 
 @Controller('user')
@@ -112,5 +111,17 @@ export class UserController {
     delete(@Param('id') id:number){
         return(this.userServices.deleteUser(id))
     }
+    @Post('checkout')
+    async handleCheckout(@Body() body: { user_id: string, paymentMethodNonce: string ,TotalAmount:number}) {
+        try {
+            const { user_id, paymentMethodNonce ,TotalAmount} = body;
+            const result = await this.userServices.processCheckout(user_id, paymentMethodNonce,TotalAmount);
+            return { result };
+        } catch (error) {
+            console.error('Error during checkout:', error);
+            return { error: error.message || 'Internal Server Error' };
+        }
+    }
+    
 
 }
