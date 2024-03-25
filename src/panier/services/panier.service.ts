@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { panierEntity } from '../models/panier.entity';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Observable, from } from 'rxjs';
 import { panier } from '../models/panier.interface';
 
@@ -16,11 +16,14 @@ export class PanierService {
         return this.panierReposotory.save(panier);
     }
     
-    async findOne(condition: any): Promise<panier> {
-        return  this.panierReposotory.findOne( condition );
+    findAllPanier(condition: any): Promise<panier[]> {
+        return  this.panierReposotory.find( condition );
 
     }
-    deletePanier(id_user: number): Observable<DeleteResult> {
-        return from(this.panierReposotory.delete({ id_user :id_user , etat: 'non payé' }));
+    deletePanier(id_user: number): Promise<DeleteResult> {
+        return this.panierReposotory.delete({ id_user :id_user , etat: 'non payé' });
+    }
+    updatePanier(id_user:number):Promise<UpdateResult>{
+        return this.panierReposotory.update({ id_user }, { etat: 'payé' })
     }
 }
