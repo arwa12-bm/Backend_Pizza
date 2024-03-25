@@ -3,6 +3,7 @@ export interface panier{
     cartItem?:CartItem[];
     id_user?:number;
     etat?:string;
+    prix?:number;
     createdAt?:Date;
 }
 

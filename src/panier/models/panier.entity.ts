@@ -13,6 +13,9 @@ export class panierEntity{
     @Column({default:"non payé"})
     etat:string
 
+    @Column({ type: 'float',default: 0.00})
+    prix:number;
+
     @Column({})
     id_user:number;
 
