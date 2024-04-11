@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryColumn} from "typeorm";
-import {  BasicComposition, Price, imageUrl, rank} from "./items.interface";
+import {  BasicComposition} from "./items.interface";
 
 @Entity('items')
 export class itemsEntity{
@@ -7,19 +7,16 @@ export class itemsEntity{
     id:string
 
     @Column({default: ""})
-    color:string;
-
-    @Column({default: ""})
     title:string;
 
-    @Column({ type: 'jsonb' }) 
-    price: Price;
+    @Column({ type: 'float',default: 0.00})
+    price:number;
 
-    @Column({ type: 'jsonb' }) 
-    ranks: rank[];
+    @Column({ default: 0}) 
+    ranks: number;
 
-    @Column({ type: 'jsonb' })
-    imageUrl: imageUrl;
+    @Column({default: ""})
+    imageUrl: string;
 
     @Column({ type: 'jsonb' }) 
     basicComposition: BasicComposition;
