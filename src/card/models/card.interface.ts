@@ -8,23 +8,6 @@ export interface card{
     createdAt?:Date;
 }
 
-interface Price {
-    tva: number | null;
-    default: number;
-    priceHT: number;
-    override: any[]; // Define the correct type if needed
-    advancedPrice: {
-    [key: string]: {
-        tva: number | null;
-        priceHT: number;
-        pricettc: number;
-        methodePrice: string;
-        scheduledPrice: any[]; // Define the correct type if needed
-        originalKeyElements: { id: string; title: string }[];
-    };
-    };
-    saleModeVatRates: { saleModeUuid: string }[];
-}
 
 interface BasicCompositionItem {
     id: number;
@@ -41,14 +24,10 @@ interface BasicComposition {
 
 export interface Item {
     id: string;
-    color?: string;
-    price: Price;
+    price: number;
     title: string;
-    ranks?: { default: number; orderOverride: { Order: number; IdShop: number }[] };
-    imageUrl: {
-        Default: { urlDefault: string; salesSupport: any[] };
-        override: { shopId: string }[];
-    };
+    ranks?: number;
+    imageUrl: string;
     basicComposition: BasicComposition;
     categoryParent?: string;
     allergens?: string[]; // Assuming these are IDs of allergens
