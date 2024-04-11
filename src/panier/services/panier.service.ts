@@ -16,8 +16,13 @@ export class PanierService {
         return this.panierReposotory.save(panier);
     }
     
-    findAllPanier(condition: any): Promise<panier[]> {
+    findPanier(condition: any): Promise<panier[]> {
         return  this.panierReposotory.find( condition );
+
+    }
+
+    findAllPanier(): Observable<panier[]> {
+        return  from(this.panierReposotory.find());
 
     }
     deletePanier(id_user: number): Promise<DeleteResult> {

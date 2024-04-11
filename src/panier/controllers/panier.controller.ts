@@ -26,7 +26,7 @@ export class PanierController {
             @Param('id') id_user:number,
         ){
             try{
-                const panier = await this.panierServices.findAllPanier({where:{ id_user :id_user,etat: 'non payé'}})
+                const panier = await this.panierServices.findPanier({where:{ id_user :id_user,etat: 'non payé'}})
                 return panier ;
             }catch(e){
                 return{message:'Get panier error:', e}
@@ -39,7 +39,7 @@ export class PanierController {
             @Param('id') id_user:number,
         ){
             try{
-                const commande = await this.panierServices.findAllPanier({where:{ id_user :id_user,etat: 'payé'}})
+                const commande = await this.panierServices.findPanier({where:{ id_user :id_user,etat: 'payé'}})
                 return commande ;
             }catch(e){
                 return{message:'Get commande error:', e}
@@ -47,6 +47,11 @@ export class PanierController {
             }
 
         }
+    @Get()
+    findAll():Observable<panier[]>{
+        return(this.panierServices.findAllPanier())
+    }
+
     @Delete(':id')
     delete(@Param('id') id_user:number){
         return(this.panierServices.deletePanier(id_user))
