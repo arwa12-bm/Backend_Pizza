@@ -1,38 +1,25 @@
 import { timeStamp } from "console";
 import { Column, Entity, PrimaryColumn } from "typeorm";
-import {  description, imageUrl, rank, video} from "./categories.interface";
 
 @Entity('categories')
 export class categoriesEntity{
     @PrimaryColumn()
-    id:string
-
-    @Column({default: ""})
-    color:string; 
+    id:string; 
 
     @Column( {type: "simple-array"})
     items:string[];
 
-    @Column({ type: 'jsonb' }) 
-    ranks:rank;
+    @Column({default: 0}) 
+    ranks:number;
 
     @Column({default: ""})
     title:string;
 
-    @Column({ type: 'jsonb' }) 
-    video:video;
-
-    @Column({})
+    @Column({default: 0})
     idCard:number;
 
-    @Column({default: false})
-    archive:boolean;
-
-    @Column({ type: 'jsonb' })
-    imageUrl:imageUrl;
-
-    @Column({ type: 'jsonb' })
-    description:description;
+    @Column({ default:"" })
+    imageUrl:string;
 
     @Column( {type:"simple-array"})
     categoryChild:any[];

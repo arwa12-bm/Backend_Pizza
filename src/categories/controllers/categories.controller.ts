@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { categories, description, imageUrl, rank, video } from '../models/categories.interface';
+import { categories } from '../models/categories.interface';
 import { CategoriesService } from '../services/categories.service';
 
 @Controller('categories')
@@ -11,21 +11,17 @@ export class CategoriesController {
     @Post('Addcategories')
     async AddCategories(
         @Body('id')  id: string,
-        @Body('color')  color: string,
         @Body('items')  items: string[],
-        @Body('ranks')  ranks: rank,
+        @Body('ranks')  ranks: number,
         @Body('title')  title: string,
-        @Body('video')  video: video,
         @Body('idCard')  idCard: number,
-        @Body('archive')  archive: boolean,
-        @Body('imageUrl')  imageUrl:imageUrl,
-        @Body('description')  description: description,
+        @Body('imageUrl')  imageUrl:string,
         @Body('categoryChild')  categoryChild: any[],
         @Body('categoryParent')  categoryParent: string,
 
     ){ 
         try{
-        const categories = await this.categoriesServices.createCategories({id,color,items,ranks,title,video,idCard,archive,imageUrl,description,categoryChild,categoryParent});
+        const categories = await this.categoriesServices.createCategories({id,items,ranks,title,idCard,imageUrl,categoryChild,categoryParent});
         return categories;
         }catch(e){
             return{message:"Categories error:",e}
