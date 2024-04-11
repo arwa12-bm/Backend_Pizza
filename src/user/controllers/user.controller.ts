@@ -25,6 +25,11 @@ export class UserController {
             @Body('createdAt')  createdAt:Date,
 
         ){
+            const existingUser = await this.userServices.findOne({where:{email}});
+            if (existingUser) {
+                // Si un utilisateur avec cet e-mail existe déjà, lancez une exception de conflit
+                throw new BadRequestException('Adresse e-mail existe déjà')
+            }
                 const hashedPassword = await bcrypt.hash(password, 12);
                 const user = await this.userServices.createUser({
                             nom,
@@ -35,7 +40,7 @@ export class UserController {
                             createdAt
                 });
                 delete user.password;
-                return user;
+                return {message: 'success'};
     }
     
     @Post('login')
@@ -48,10 +53,10 @@ export class UserController {
             // Handle the case when the user is found
             const user = await this.userServices.findOne({where:{email}});
             if(!user){
-                throw new BadRequestException('invalid email')
+                throw new BadRequestException('votre email est incorrecte')
             }
             if(!await bcrypt.compare(password,user.password)){
-                throw new BadRequestException('invalid password')
+                throw new BadRequestException('votre mot de passe est incorrecte')
             }else{
                 const jwt =await this.jwtServices.signAsync({id: user.id})
                 response.cookie('jwt',jwt,{httpOnly:true })

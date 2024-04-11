@@ -3,6 +3,7 @@ export interface user{
     nom?:string;
     prénom?:string;
     email?:string;
+    role?:string;
     télephone?:number;
     password?:string;
     createdAt?:Date;

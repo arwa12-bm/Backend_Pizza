@@ -12,6 +12,9 @@ export class userEntity{
     @Column({default:''})
     prénom:string;
 
+    @Column({default:'client'})
+    role:string;
+
     @Column({default:''})
     email:string;
 
