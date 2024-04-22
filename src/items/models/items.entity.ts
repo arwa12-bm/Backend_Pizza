@@ -1,9 +1,9 @@
-import { Column, Entity, PrimaryColumn} from "typeorm";
+import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
 import {  BasicComposition} from "./items.interface";
 
 @Entity('items')
 export class itemsEntity{
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id:string
 
     @Column({default: ""})
@@ -18,7 +18,7 @@ export class itemsEntity{
     @Column({default: ""})
     imageUrl: string;
 
-    @Column({ type: 'jsonb' }) 
+    @Column({ type: 'jsonb', default: { id: 0 , rank: 0, title: '', quantity:1 , isVisible: true, isObligatory: true } })
     basicComposition: BasicComposition;
 
     @Column({default: ""})

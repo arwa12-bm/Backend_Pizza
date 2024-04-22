@@ -1,11 +1,13 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { ItemsService } from '../services/items.service';
 import { BasicComposition, Item } from '../models/items.interface';
+import { CardService } from 'src/card/services/card.service';
 
 @Controller('items')
 export class ItemsController {
     constructor(
-    private itemsServices:ItemsService
+    private itemsServices:ItemsService,
+    private cardService:CardService
 ){}
 
 @Post('AddItems')
@@ -21,7 +23,19 @@ async AddItems(
 ){ 
     try{
     const items = await this.itemsServices.createItem({id,title,price,ranks,imageUrl,basicComposition,categoryParent,allergens});
-    return items;
+    const AllItems = await this.itemsServices.findAllItem();
+    const entityToUpdate:any=await this.cardService.findOne({where:{id:1}})
+    if (!entityToUpdate) {
+        // Handle entity not found error
+        throw new Error('Entity not found');
+        }
+    
+        // Update the column
+        entityToUpdate.items = AllItems;
+    
+        // Save the updated entity
+        return await this.cardService.createCard(entityToUpdate);
+        
     }catch(e){
         return{message:"items error:",e}
     }
