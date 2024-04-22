@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Req } from '@nestjs/common';
 import { PanierService } from '../services/panier.service';
-import { CartItem, panier } from '../models/panier.interface';
+import { CartItem, ModeRetrait, panier } from '../models/panier.interface';
 import { UpdateResult } from 'typeorm';
 import { Observable } from 'rxjs';
 
@@ -15,10 +15,11 @@ export class PanierController {
             @Body('id_user')  id_user:number,
             @Body('etat')  etat:string,
             @Body('prix')  prix:number,
+            @Body('ModeRetrait')  ModeRetrait:ModeRetrait,
             @Body('createdAt')  createdAt:Date,
 
         ){
-            const panier = await  this.panierServices.createPanier({cartItem,id_user,etat,prix,createdAt})
+            const panier = await  this.panierServices.createPanier({cartItem,id_user,etat,prix,ModeRetrait,createdAt})
             return panier;
         }
     @Get(':id')
@@ -56,10 +57,54 @@ export class PanierController {
     delete(@Param('id') id_user:number){
         return(this.panierServices.deletePanier(id_user))
     }
-    @Put(':id')
-    update(
+    @Put('Payé/:id')
+    async updatePayé(
         @Param('id') id_user:number,
     ):Promise<UpdateResult>{
-        return(this.panierServices.updatePanier(id_user))
+        const commande = await this.panierServices.findPanier({where:{ id_user :id_user,etat: 'non payé',etat_Commande:''}})
+        return(this.panierServices.updatePanierPayéCart(commande[0].id))
+    }
+
+    @Put('Encours/:id')
+    async updateEncours(
+        @Param('id') id_user:number,
+    ):Promise<UpdateResult>{
+            const commande = await this.panierServices.findPanier({where:{ id_user :id_user,etat: 'non payé'}})
+            return(this.panierServices.updatePanierEncours(commande[0].id))
+        
+    }
+    @Put('EnAttente/:id')
+    async updateEnAttente(
+        @Param('id') id_user:number,
+    ):Promise<UpdateResult>{
+            const commande = await this.panierServices.findPanier({where:{ id_user :id_user,etat: 'non payé',etat_Commande:''}})
+            return(this.panierServices.updatePanierEnAttente(commande[0].id))
+        
+    }
+
+    
+
+    @Put('livrer/:id')
+    async updateLivrer(
+        @Param('id') id_user:number,
+    ):Promise<UpdateResult>{
+            let cmd :any
+            const commande = await this.panierServices.findPanier({where:{ id_user :id_user,etat: 'payé',etat_Commande:'En cours de préparation'}})
+            for(const item in commande){
+                if(commande[item].ModeRetrait.livrer === true){
+                    cmd = commande[item]
+                }
+            }
+            return(this.panierServices.updatePanierExpédié(cmd.id))
+        
+    }
+
+    @Put('passer/:id')
+    async updatePasser(
+        @Param('id') id:number,
+    ):Promise<UpdateResult>{
+            const commande = await this.panierServices.findPanier({where:{id}})
+            return(this.panierServices.updatePanierExpédié(commande[0].id))
+        
     }
 }

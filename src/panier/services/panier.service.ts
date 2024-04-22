@@ -26,9 +26,20 @@ export class PanierService {
 
     }
     deletePanier(id_user: number): Promise<DeleteResult> {
-        return this.panierReposotory.delete({ id_user :id_user , etat: 'non payé' });
+        return this.panierReposotory.delete({ id_user :id_user , etat: 'non payé', etat_Commande:''});
     }
-    updatePanier(id_user:number):Promise<UpdateResult>{
-        return this.panierReposotory.update({ id_user }, { etat: 'payé' })
+    updatePanierPayéCart(id:number):Promise<UpdateResult>{
+        return this.panierReposotory.update({ id }, { etat: 'payé',etat_Commande:'En cours de préparation'})
     }
+    updatePanierEncours(id:number):Promise<UpdateResult>{
+        return this.panierReposotory.update({ id }, { etat_Commande:'En cours de préparation'})
+    }
+    updatePanierEnAttente(id:number):Promise<UpdateResult>{
+        return this.panierReposotory.update({ id }, { etat_Commande:'En attente'})
+    }
+    updatePanierExpédié(id:number):Promise<UpdateResult>{
+        return this.panierReposotory.update({ id }, {etat: 'payé', etat_Commande:'Expédié'})
+    }
+
+
 }

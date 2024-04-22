@@ -1,6 +1,6 @@
 import { timeStamp } from "console";
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { CartItem } from "./panier.interface";
+import { CartItem, ModeRetrait } from "./panier.interface";
 
 @Entity('panier')
 export class panierEntity{
@@ -12,6 +12,12 @@ export class panierEntity{
 
     @Column({default:"non payé"})
     etat:string
+    
+    @Column({default: ""})
+    etat_Commande:string
+    
+    @Column({ type: 'jsonb', default:null })
+    ModeRetrait:ModeRetrait;
 
     @Column({ type: 'float',default: 0.00})
     prix:number;
