@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Req, Res, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { UserService } from '../services/user.service';
 import { user } from '../models/user.interface';
 import { Observable } from 'rxjs';
@@ -6,6 +6,8 @@ import { UpdateResult } from 'typeorm';
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt';
 import { Response,Request } from 'express';
+import { MailerService } from '@nestjs-modules/mailer';
+import { AuthGuard } from '@nestjs/passport';
 
 
 @Controller('user')
@@ -13,6 +15,7 @@ export class UserController {
     constructor(
         private userServices:UserService,
         private readonly jwtServices:JwtService,
+        private readonly mailService: MailerService,
         ){}
 
     @Post('register')
@@ -59,7 +62,7 @@ export class UserController {
                 throw new BadRequestException('votre mot de passe est incorrecte')
             }else{
                 const jwt =await this.jwtServices.signAsync({id: user.id})
-                response.cookie('jwt',jwt,{httpOnly:true })
+                response.cookie('jwt',jwt)
                 return {message: 'success'};
             }    
         } catch (error) {
@@ -67,6 +70,43 @@ export class UserController {
             return {message: 'User not found:',error};
         }
     }
+
+    @Get('google')
+    @UseGuards(AuthGuard('google'))
+    async googleAuth(@Req()  req){}
+
+    @Get('auth/google/callback')
+    @UseGuards(AuthGuard('google'))
+    async googleAuthRedirect(@Req() req  ,@Res({passthrough: true}) response :Response){
+        try {
+            const rep: any = await this.userServices.googleLogin(req);
+            // Set the JWT token in cookies
+            response.cookie('jwt', rep.user);
+            return response.redirect(`http://localhost:3000/`);
+
+            //return { message: 'success',token:rep.user.accessToken };
+        } catch (error) {
+            // Handle error
+            console.error(error);
+            // You might want to redirect to an error page or return an error response
+            response.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+    @Put('password')
+    async updatePssword(
+        @Body('email') email: string,
+        @Body('password') password: string,
+
+    ){
+            // Handle the case when the user is found
+            const user = await this.userServices.findOne({where:{email}});
+            const hashedPassword =await bcrypt.hash(password, 12);
+            await this.userServices.updateUserPassword(user.id,hashedPassword)
+            return {message: 'success'};
+    }
+
+
 
     @Get('user')
         async user(@Req() request:Request){
@@ -128,5 +168,17 @@ export class UserController {
         }
     }
     
-
+    @Post('send-email')
+    async sendEmail(
+        @Body('to') to: string,
+        @Body('subject') subject: string,
+        @Body('text') text: string,
+        ) {
+        const user = await this.userServices.findOne({where:{email:to}});
+        if(!user){
+            throw new BadRequestException("compte inexistant")
+        }
+        await this.userServices.sendEmail(to, subject, text);
+        return { message: 'Email envoyé avec succès' };
+        }
 }

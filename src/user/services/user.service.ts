@@ -5,6 +5,7 @@ import { user } from '../models/user.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Observable, from } from 'rxjs';
 import { BraintreeProvider } from '../braintree.provider';
+import { MailerService } from '@nestjs-modules/mailer';
 
 
 @Injectable()
@@ -13,6 +14,7 @@ export class UserService {
     @InjectRepository(userEntity)
     private readonly userRepository:Repository<userEntity>,
     private readonly braintreeProvider: BraintreeProvider,
+    private readonly mailerService: MailerService
     ){}
     async createUser(user:user): Promise<user>{
         return this.userRepository.save(user);
@@ -28,6 +30,9 @@ export class UserService {
     }
     updateUser(id:number,user:user):Observable<UpdateResult>{
         return from(this.userRepository.update(id,user))
+    }
+    updateUserPassword(id:number,password:string){
+        return  this.userRepository.update(id,{password})
     }
     deleteUser(id:number):Observable<DeleteResult>{
         return from(this.userRepository.delete(id))
@@ -59,6 +64,31 @@ export class UserService {
         throw new Error('Internal Server Error');
     }
     }
+
+    async sendEmail(to: string, subject: string, text: string) {
+        try {
+            await this.mailerService.sendMail({
+            to,
+            subject,
+            text,
+            });
+            console.log('Email sent successfully');
+        } catch (error) {
+            console.error('Error sending email:', error);
+            throw error;
+        }
+        }
+
+        googleLogin(req:any){
+            if(!req.user){
+                return 'No user from google'
+            }
+            return{
+                message : 'User Info from Google',
+                user : req.user ,
+                
+            }
+        }
 }
     
 
