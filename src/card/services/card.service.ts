@@ -17,9 +17,11 @@ export class CardService {
     async findOne(condition: any): Promise<card> {
         return  this.cardReposotory.findOne( condition );
 
+
     }
     
     findAllCard():Promise<card[]>{
         return this.cardReposotory.find()
     }
+   
 }

@@ -48,6 +48,7 @@ export class PanierController {
             }
 
         }
+
     @Get()
     findAll():Observable<panier[]>{
         return(this.panierServices.findAllPanier())
@@ -57,6 +58,7 @@ export class PanierController {
     delete(@Param('id') id_user:number){
         return(this.panierServices.deletePanier(id_user))
     }
+    
     @Put('/:id')
     async updatePayé(
         @Param('id') id_user:number,
