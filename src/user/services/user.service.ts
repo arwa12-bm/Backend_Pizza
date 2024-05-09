@@ -6,6 +6,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Observable, from } from 'rxjs';
 import { BraintreeProvider } from '../braintree.provider';
 import { MailerService } from '@nestjs-modules/mailer';
+import * as Twilio from 'twilio';
+
 
 
 @Injectable()
@@ -33,6 +35,9 @@ export class UserService {
     }
     updateUserPassword(id:number,password:string){
         return  this.userRepository.update(id,{password})
+    }
+    updateUserAdresse(id:number,adresse:any){
+        return  this.userRepository.update(id,{adresse})
     }
     deleteUser(id:number):Observable<DeleteResult>{
         return from(this.userRepository.delete(id))
@@ -89,6 +94,29 @@ export class UserService {
                 
             }
         }
+
+
+        async sendSms(phoneNumber: string, message: string) {
+            const accountSid =process.env.accountSid
+            const authToken = process.env.authToken
+            const fromNumber = process.env.formNumber
+    
+            const client = Twilio(accountSid, authToken);
+    
+            try {
+                const response = await client.messages.create({
+                    body: message,
+                    to: phoneNumber,
+                    from: fromNumber
+                });
+                console.log('SMS sent successfully');
+                } catch (error) {
+                throw new Error('Error sending SMS: ' + error.message);
+            }
+        }
+
+        
+        
 }
     
 

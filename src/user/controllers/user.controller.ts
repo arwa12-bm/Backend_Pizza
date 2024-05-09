@@ -93,6 +93,29 @@ export class UserController {
         }
     }
 
+    @Get('facebook')
+    @UseGuards(AuthGuard('facebook'))
+    async facebookAuth(@Req()  req){}
+
+    @Get('auth/facebook/callback')
+    @UseGuards(AuthGuard('facebook'))
+    async facebookAuthRedirect(@Req() req  ,@Res({passthrough: true}) response :Response){
+        try {
+            const rep: any = await this.userServices.googleLogin(req);
+            // Set the JWT token in cookies
+            response.cookie('jwt', rep.user);
+            return response.redirect(`http://localhost:3000/`);
+
+            //return { message: 'success',token:rep.user.accessToken };
+        } catch (error) {
+            // Handle error
+            console.error(error);
+            // You might want to redirect to an error page or return an error response
+            response.status(500).json({ error: 'Internal Server Error' });
+        }
+    }
+
+
     @Put('password')
     async updatePssword(
         @Body('email') email: string,
@@ -103,6 +126,16 @@ export class UserController {
             const user = await this.userServices.findOne({where:{email}});
             const hashedPassword =await bcrypt.hash(password, 12);
             await this.userServices.updateUserPassword(user.id,hashedPassword)
+            return {message: 'success'};
+    }
+
+    @Put('adresse/:id')
+    async updateAdresse(
+        @Param('id') id:number,
+        @Body('adresse') adresse: any,
+
+    ){
+            await this.userServices.updateUserAdresse(id,adresse)
             return {message: 'success'};
     }
 
@@ -181,4 +214,19 @@ export class UserController {
         await this.userServices.sendEmail(to, subject, text);
         return { message: 'Email envoyé avec succès' };
         }
+
+
+        @Post('send_SMS')
+        async sendSms(@Body() body: { phoneNumber: string; message: string }) {
+            const { phoneNumber, message } = body;
+
+            const user = await this.userServices.findOne({where:{télephone:phoneNumber}});
+            if(!user){
+                throw new BadRequestException("compte inexistant")
+            }
+            const result = await this.userServices.sendSms(`+216 ${phoneNumber}`, message);
+            return { message: 'Message envoyé avec succès', result ,email:user.email};
+        }
+        
+
 }

@@ -7,6 +7,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { BraintreeProvider } from './braintree.provider';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { GoogleProvider } from './google.provider';
+import { FacebookProvider } from './facebook.provider';
 
 @Module({
   imports:[
@@ -31,7 +32,7 @@ import { GoogleProvider } from './google.provider';
     }
   ),
 ],
-  providers: [UserService,BraintreeProvider,GoogleProvider],
+  providers: [UserService,BraintreeProvider,GoogleProvider,FacebookProvider],
   controllers: [UserController]
 })
 export class UserModule {}

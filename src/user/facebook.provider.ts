@@ -8,9 +8,9 @@ import { Strategy } from 'passport-facebook';
 export class FacebookProvider extends PassportStrategy(Strategy, 'facebook') {
     constructor() {
         super({
-            clientID: '',
-            clientSecret: '',
-            callbackURL: 'http://localhost:3000/auth/facebook',
+            clientID: process.env.Facebook_clientID,
+            clientSecret: process.env.Facebook_clientSecret,
+            callbackURL: "http://localhost:8080/api/user/auth/facebook/callback",
             profileFields: ['id', 'emails', 'name'],
         });
     }

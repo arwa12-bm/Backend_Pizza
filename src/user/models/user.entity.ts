@@ -18,6 +18,9 @@ export class userEntity{
     @Column({default:''})
     email:string;
 
+    @Column({ type: 'jsonb',default:null }) // Change the data type to 'jsonb'
+    adresse: any;
+
     @Column({default:0})
     télephone:number;
 
