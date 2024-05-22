@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { categories } from '../models/categories.interface';
 import { CategoriesService } from '../services/categories.service';
 import { CardService } from 'src/card/services/card.service';
+import { Observable } from 'rxjs';
+import { UpdateResult } from 'typeorm';
 @Controller('categories')
 export class CategoriesController {
     constructor(
@@ -21,20 +23,7 @@ export class CategoriesController {
         try{
         const categories = await this.categoriesServices.createCategories({id,items,title,idCard,imageUrl,shopParent});
         // return categories;
-        const Allcategories = await this.categoriesServices.findAllcategories();
-        const entityToUpdate:any=await this.cardService.findOne({where:{id:1}})
-        if (!entityToUpdate) {
-            // Handle entity not found error
-            throw new Error('Entity not found');
-          }
-      
-          // Update the column
-          entityToUpdate.categories = Allcategories;
-      
-          // Save the updated entity
-          return await this.cardService.createCard(entityToUpdate);
-        
-
+        return categories;
         }catch(e){
             return{message:"Categories error:",e}
         }
@@ -44,4 +33,16 @@ export class CategoriesController {
     findAll():Promise<categories[]>{
         return(this.categoriesServices.findAllcategories())
     }
+    @Delete(':id')
+    delete(@Param('id') id:number){
+        return(this.categoriesServices.deleteCategorie(id))
+    }
+    @Put(':id')
+    update(
+        @Param('id') id:number,
+        @Body() categories:categories
+    ):Observable<UpdateResult>{
+        return(this.categoriesServices.updateCategorie(id,categories))
+    }
+
 }

@@ -3,6 +3,8 @@ import { PanierService } from '../services/panier.service';
 import { CartItem, ModeRetrait, panier } from '../models/panier.interface';
 import { UpdateResult } from 'typeorm';
 import { Observable } from 'rxjs';
+import { info } from 'src/statistique/models/statistique.interface';
+
 
 @Controller('panier')
 export class PanierController {
@@ -27,7 +29,7 @@ export class PanierController {
             @Param('id') id_user:number,
         ){
             try{
-                const panier = await this.panierServices.findPanier({where:{ id_user :id_user,etat: 'non payé'}})
+                const panier = await this.panierServices.findPanier({where:{ id_user :id_user,etat: 'non payé', etat_Commande:''}})
                 return panier ;
             }catch(e){
                 return{message:'Get panier error:', e}
@@ -53,6 +55,32 @@ export class PanierController {
     findAll():Observable<panier[]>{
         return(this.panierServices.findAllPanier())
     }
+
+    @Get("stat/1")
+async findDay(): Promise<any> {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate()-7); // Subtract 7 days from today
+console.log(oneWeekAgo.toISOString().split('T')[0]);
+const cmd:any  =await this.panierServices.findPanierAfterDate(oneWeekAgo);
+// Object to store the counts of each title
+const titleCounts: info = {};
+for (const order of cmd) {
+    for (const item of order.cartItem as any[]) {
+        const title: any = item.data.title;
+        // Update titleCounts
+        if (!titleCounts[title]) {
+            titleCounts[title] = { nbrFois: 0, heures: [] };
+        }
+        titleCounts[title].nbrFois++; // Increment count
+        const date =order.createdAt
+        const heure = date.toISOString().split('T')[1].split(".")[0]
+        titleCounts[title].heures.push(heure); // Store order creation time
+    }
+}
+
+    console.log(titleCounts);
+    return titleCounts ;
+}
 
     @Delete(':id')
     delete(@Param('id') id_user:number){

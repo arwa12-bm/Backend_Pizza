@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ItemsService } from '../services/items.service';
-import { BasicComposition, Item } from '../models/items.interface';
+import { BasicComposition, Detail, Item } from '../models/items.interface';
 import { CardService } from 'src/card/services/card.service';
+import { Observable } from 'rxjs';
+import { UpdateResult } from 'typeorm';
 
 @Controller('items')
 export class ItemsController {
@@ -14,28 +16,15 @@ export class ItemsController {
 async AddItems(
     @Body('id')  id: string,
     @Body('title')  title: string,
-    @Body('price')  price: number,
-    @Body('ranks')  ranks: number,
     @Body('imageUrl')  imageUrl: string,
+    @Body('detail')   detail:Detail,
     @Body('basicComposition')  basicComposition: BasicComposition,
     @Body('categoryParent')  categoryParent: string,
-    @Body('allergens') allergens: string[],
 ){ 
     try{
-    const items = await this.itemsServices.createItem({id,title,price,ranks,imageUrl,basicComposition,categoryParent,allergens});
-    const AllItems = await this.itemsServices.findAllItem();
-    const entityToUpdate:any=await this.cardService.findOne({where:{id:1}})
-    if (!entityToUpdate) {
-        // Handle entity not found error
-        throw new Error('Entity not found');
-        }
+    const items = await this.itemsServices.createItem({id,title,imageUrl,basicComposition,categoryParent,detail});
+    return items
     
-        // Update the column
-        entityToUpdate.items = AllItems;
-    
-        // Save the updated entity
-        return await this.cardService.createCard(entityToUpdate);
-        
     }catch(e){
         return{message:"items error:",e}
     }
@@ -44,6 +33,17 @@ async AddItems(
 @Get()
 findAll():Promise<Item[]>{
     return(this.itemsServices.findAllItem())
+}
+@Delete(':id')
+delete(@Param('id') id:number){
+    return(this.itemsServices.deleteItem(id))
+}
+@Put(':id')
+update(
+    @Param('id') id:number,
+    @Body() item:Item
+):Observable<UpdateResult>{
+    return(this.itemsServices.updateItem(id,item))
 }
 
 

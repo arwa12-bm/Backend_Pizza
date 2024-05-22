@@ -19,6 +19,7 @@ export class panierEntity{
     @Column({ type: 'jsonb', default:null })
     ModeRetrait:ModeRetrait;
 
+
     @Column({ type: 'float',default: 0.00})
     prix:number;
 

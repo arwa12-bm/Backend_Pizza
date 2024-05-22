@@ -14,7 +14,6 @@ export interface shoplist {
     tel: string;
     villelivraison: villelivraison;
     horaire:horaire ;
-    Responsible: string;
     etat: string;
 }
 export interface villelivraison {
@@ -25,6 +24,12 @@ export interface villelivraison {
     };
     };
 
-export interface horaire {
-    [key: string]: string;
-    }
+export interface horaire{
+    LUNDI: { firstStart: string; firstEnd: string; secondStart: string; secondEnd: string };
+    MARDI: { firstStart: string; firstEnd: string; secondStart: string; secondEnd: string };
+    MERCREDI: { firstStart: string; firstEnd: string; secondStart: string; secondEnd: string };
+    JEUDI: { firstStart: string; firstEnd: string; secondStart: string; secondEnd: string };
+    VENDREDI: { firstStart: string; firstEnd: string; secondStart: string; secondEnd: string };
+    SAMEDI: { firstStart: string; firstEnd: string; secondStart: string; secondEnd: string };
+    DIMANCHE: { firstStart: string; firstEnd: string; secondStart: string; secondEnd: string };
+}

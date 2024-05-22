@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { itemsEntity } from '../models/items.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 import { Item } from '../models/items.interface';
+import { Observable, from } from 'rxjs';
 
 @Injectable()
 export class ItemsService { 
@@ -16,5 +17,13 @@ async createItem(item:Item): Promise<Item>{
 }
 findAllItem():Promise<Item[]>{
     return this.itemsReposotory.find()
+}
+
+deleteItem(id:number):Observable<DeleteResult>{
+    return from(this.itemsReposotory.delete(id))
+}
+
+updateItem(id:number,item:Item):Observable<UpdateResult>{
+    return from(this.itemsReposotory.update(id,item))
 }
 }

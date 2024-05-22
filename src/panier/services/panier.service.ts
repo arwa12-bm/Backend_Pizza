@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { panierEntity } from '../models/panier.entity';
-import { DeleteResult, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult, MoreThan,MoreThanOrEqual } from 'typeorm';
 import { Observable, from } from 'rxjs';
 import { panier } from '../models/panier.interface';
+import { Op } from "sequelize";
+
+
 
 @Injectable()
 export class PanierService {
@@ -20,6 +23,16 @@ export class PanierService {
         return  this.panierReposotory.find( condition );
 
     }
+    async findPanierAfterDate(oneWeekAgo:Date): Promise<panier[]> {
+        const dateToCompare = new Date(oneWeekAgo);
+    
+    return this.panierReposotory.find({
+        where: {
+        createdAt: MoreThanOrEqual(dateToCompare)
+        }
+    });
+    }
+
 
     findAllPanier(): Observable<panier[]> {
         return  from(this.panierReposotory.find());
@@ -45,4 +58,6 @@ export class PanierService {
     }
 
 
+
+ 
 }

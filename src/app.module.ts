@@ -10,6 +10,7 @@ import { ItemsModule } from './items/items.module';
 import { ShoplistModule } from './shoplist/shoplist.module';
 import { CategoriesModule } from './categories/categories.module';
 import { SupplimentCompositionModule } from './suppliment-composition/suppliment-composition.module';
+import { StatistiqueModule } from './statistique/statistique.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { SupplimentCompositionModule } from './suppliment-composition/suppliment
     ShoplistModule,
     CategoriesModule,
     SupplimentCompositionModule,
+    StatistiqueModule,
   ],
   controllers: [AppController],
   providers: [AppService],

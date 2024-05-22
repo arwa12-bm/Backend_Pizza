@@ -1,6 +1,6 @@
 export interface card{
     id?:number;
-    title:string;
+    title?:string;
     items?:Item[];
     SupplimentComposition?:SupplimentComposition[];
     shoplist?:shoplist[];

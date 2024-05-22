@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
-import {  BasicComposition} from "./items.interface";
+import {  BasicComposition, Detail} from "./items.interface";
 
 @Entity('items')
 export class itemsEntity{
@@ -8,12 +8,6 @@ export class itemsEntity{
 
     @Column({default: ""})
     title:string;
-
-    @Column({ type: 'float',default: 0.00})
-    price:number;
-
-    @Column({ default: 0}) 
-    ranks: number;
 
     @Column({default: ""})
     imageUrl: string;
@@ -24,8 +18,9 @@ export class itemsEntity{
     @Column({default: ""})
     categoryParent:string;
 
-    @Column({ type: 'jsonb' }) 
-    allergens?: string[];
+
+    @Column({ type: 'jsonb', default:null })
+    detail:Detail;
 
     @Column({type:'timestamp',default:()=>'CURRENT_TIMESTAMP'})
     createdAt:Date;

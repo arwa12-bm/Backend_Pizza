@@ -7,6 +7,7 @@ import { Observable, from } from 'rxjs';
 import { BraintreeProvider } from '../braintree.provider';
 import { MailerService } from '@nestjs-modules/mailer';
 import * as Twilio from 'twilio';
+import { panier } from 'src/panier/models/panier.interface';
 
 
 
@@ -115,7 +116,9 @@ export class UserService {
             }
         }
 
-        
+    
+
+
         
 }
     

@@ -4,9 +4,8 @@ import {  horaire, shoplist, villelivraison } from "./shoplist.interface";
 
 @Entity('shoplist')
 export class shoplistEntity{
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id:string
-
     @Column({default: ""})
     town:string; 
     @Column({default: ""})
@@ -33,8 +32,6 @@ export class shoplistEntity{
     villelivraison: villelivraison;
     @Column({ type: 'jsonb' }) 
     horaire: horaire;
-    @Column({default: ""})
-    Responsible:string;
     @Column({default: ""})
     etat:string;
 

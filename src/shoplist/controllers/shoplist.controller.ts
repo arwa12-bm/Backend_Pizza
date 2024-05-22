@@ -1,6 +1,8 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ShoplistService } from '../services/shoplist.service';
 import { horaire, shoplist, villelivraison } from '../models/shoplist.interface';
+import { Observable } from 'rxjs';
+import { UpdateResult } from 'typeorm';
 
 @Controller('shoplist')
 export class ShoplistController {
@@ -8,7 +10,7 @@ export class ShoplistController {
         private shoplistServices:ShoplistService
     ){}
     
-    @Post('AddItems')
+    @Post('Addshop')
     async AddItems(
         @Body('id')  id: string,
         @Body('town')  town: string,
@@ -24,13 +26,12 @@ export class ShoplistController {
         @Body('tel')  tel: string,
         @Body('villelivraison')  villelivraison: villelivraison,
         @Body('horaire')  horaire:horaire,
-        @Body('Responsible')  Responsible: string,
         @Body('etat')  etat: string,
 
 
     ){ 
         try{
-        const items = await this.shoplistServices.createShop({id,town,image,Nature,shopid,Address,Company,Country,PostalCode,latitude,longitude,tel,villelivraison,horaire,Responsible,etat});
+        const items = await this.shoplistServices.createShop({id,town,image,Nature,shopid,Address,Company,Country,PostalCode,latitude,longitude,tel,villelivraison,horaire,etat});
         return items;
         }catch(e){
             return{message:"items error:",e}
@@ -41,6 +42,16 @@ export class ShoplistController {
     findAll():Promise<shoplist[]>{
         return(this.shoplistServices.findAllShop())
     }
-
+    @Delete(':id')
+    delete(@Param('id') id:number){
+        return(this.shoplistServices.deleteShop(id))
+    }
+    @Put(':id')
+    update(
+        @Param('id') id:number,
+        @Body() shoplist:shoplist
+    ):Observable<UpdateResult>{
+        return(this.shoplistServices.updateShop(id,shoplist))
+    }
     
 }
