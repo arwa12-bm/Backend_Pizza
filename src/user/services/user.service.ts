@@ -108,7 +108,7 @@ export class UserService {
                 const response = await client.messages.create({
                     body: message,
                     to: phoneNumber,
-                    from: fromNumber
+                    from: "+12564084334"
                 });
                 console.log('SMS sent successfully');
                 } catch (error) {

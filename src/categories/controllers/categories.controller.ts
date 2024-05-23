@@ -17,7 +17,7 @@ export class CategoriesController {
         @Body('title')  title: string,
         @Body('idCard')  idCard: number,
         @Body('imageUrl')  imageUrl:string,
-        @Body('shopParent')  shopParent: string,
+        @Body('shopParent')  shopParent: string[],
 
     ){ 
         try{

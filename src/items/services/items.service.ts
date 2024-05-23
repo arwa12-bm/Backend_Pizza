@@ -22,6 +22,10 @@ findAllItem():Promise<Item[]>{
 deleteItem(id:number):Observable<DeleteResult>{
     return from(this.itemsReposotory.delete(id))
 }
+async findOne(condition: any): Promise<Item> {
+    return  this.itemsReposotory.findOne( condition );
+
+}
 
 updateItem(id:number,item:Item):Observable<UpdateResult>{
     return from(this.itemsReposotory.update(id,item))

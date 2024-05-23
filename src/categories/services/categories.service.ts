@@ -15,7 +15,10 @@ export class CategoriesService {
     async createCategories(categories:categories): Promise<categories>{
         return this.categoriesReposotory.save(categories)
     }
+    async findOne(condition: any): Promise<categories> {
+        return  this.categoriesReposotory.findOne( condition );
 
+    }
     findAllcategories():Promise<categories[]>{
         return this.categoriesReposotory.find()
     }

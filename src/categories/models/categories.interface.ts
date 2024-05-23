@@ -4,7 +4,7 @@ export interface categories {
     title: string;
     idCard: number;
     imageUrl: string;
-    shopParent: string;
+    shopParent: string[];
 
 
 }

@@ -18,7 +18,7 @@ export class categoriesEntity{
     @Column({ default:"" })
     imageUrl:string;
 
-    @Column({default: ""})
-    shopParent:string;
+    @Column({type: "simple-array", default: []})
+    shopParent:string[];
 
 }

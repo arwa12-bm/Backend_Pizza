@@ -71,46 +71,72 @@ export class UserController {
         }
     }
 
+    
     @Get('google')
     @UseGuards(AuthGuard('google'))
-    async googleAuth(@Req()  req){}
+    async googleAuth(@Req() req) {}
 
     @Get('auth/google/callback')
     @UseGuards(AuthGuard('google'))
-    async googleAuthRedirect(@Req() req  ,@Res({passthrough: true}) response :Response){
+    async googleAuthRedirect(@Req() req, @Res({ passthrough: true }) response: Response) {
         try {
-            const rep: any = await this.userServices.googleLogin(req);
-            // Set the JWT token in cookies
-            response.cookie('jwt', rep.user);
-            return response.redirect(`http://localhost:3000/`);
+            const { user } = req;
+            if (!user) {
+                throw new BadRequestException('Google authentication failed');
+            }
 
-            //return { message: 'success',token:rep.user.accessToken };
+            // Check if the user already exists
+            let existingUser = await this.userServices.findOne({ where: { email: user.email } });
+            if (!existingUser) {
+                // Register new user
+                existingUser = await this.userServices.createUser({
+                    nom: user.firstName || 'Unknown',
+                    prénom: user.lastName || 'Unknown',
+                    email: user.email,
+                    createdAt: new Date(),
+                });
+            }
+
+            // Generate JWT token
+            const jwt = await this.jwtServices.signAsync({ id: existingUser.id });
+            response.cookie('jwt', jwt);
+            return response.redirect('http://localhost:3000/');
         } catch (error) {
-            // Handle error
             console.error(error);
-            // You might want to redirect to an error page or return an error response
             response.status(500).json({ error: 'Internal Server Error' });
         }
     }
 
     @Get('facebook')
     @UseGuards(AuthGuard('facebook'))
-    async facebookAuth(@Req()  req){}
+    async facebookAuth(@Req() req) {}
 
     @Get('auth/facebook/callback')
     @UseGuards(AuthGuard('facebook'))
-    async facebookAuthRedirect(@Req() req  ,@Res({passthrough: true}) response :Response){
+    async facebookAuthRedirect(@Req() req, @Res({ passthrough: true }) response: Response) {
         try {
-            const rep: any = await this.userServices.googleLogin(req);
-            // Set the JWT token in cookies
-            response.cookie('jwt', rep.user);
-            return response.redirect(`http://localhost:3000/`);
+            const { user } = req;
+            if (!user) {
+                throw new BadRequestException('Facebook authentication failed');
+            }
 
-            //return { message: 'success',token:rep.user.accessToken };
+            let existingUser = await this.userServices.findOne({ where: { email: user.email } });
+            if (!existingUser) {
+                existingUser = await this.userServices.createUser({
+                    nom: user.firstName || 'Unknown',
+                    prénom: user.lastName || 'Unknown',
+                    email: user.email,
+                    télephone: null,
+                    password: '',
+                    createdAt: new Date(),
+                });
+            }
+
+            const jwt = await this.jwtServices.signAsync({ id: existingUser.id });
+            response.cookie('jwt', jwt);
+            return response.redirect('http://localhost:3000/');
         } catch (error) {
-            // Handle error
             console.error(error);
-            // You might want to redirect to an error page or return an error response
             response.status(500).json({ error: 'Internal Server Error' });
         }
     }

@@ -22,6 +22,7 @@ export class FacebookProvider extends PassportStrategy(Strategy, 'facebook') {
             name: profile.name,
             email: profile.emails && profile.emails[0].value,
         };
+
         done(null, user);
     }
 }
