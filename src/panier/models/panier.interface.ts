@@ -5,6 +5,7 @@ export interface panier{
     etat?:string;
     etat_Commande?:string;
     prix?:number;
+    shop?:number;
     ModeRetrait?:ModeRetrait;
     createdAt?:Date;
 }

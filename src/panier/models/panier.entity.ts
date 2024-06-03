@@ -26,6 +26,8 @@ export class panierEntity{
     @Column({})
     id_user:number;
 
+    @Column({default: null})
+    shop:number
 
     @Column({type:'timestamp',default:()=>'CURRENT_TIMESTAMP'})
     createdAt:Date;

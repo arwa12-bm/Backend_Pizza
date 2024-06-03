@@ -17,11 +17,12 @@ export class PanierController {
             @Body('id_user')  id_user:number,
             @Body('etat')  etat:string,
             @Body('prix')  prix:number,
+            @Body('shop')  shop:number,
             @Body('ModeRetrait')  ModeRetrait:ModeRetrait,
             @Body('createdAt')  createdAt:Date,
 
         ){
-            const panier = await  this.panierServices.createPanier({cartItem,id_user,etat,prix,ModeRetrait,createdAt})
+            const panier = await  this.panierServices.createPanier({cartItem,id_user,etat,prix,ModeRetrait,shop,createdAt})
             return panier;
         }
     @Get(':id')
@@ -64,6 +65,7 @@ console.log(oneWeekAgo.toISOString().split('T')[0]);
 const cmd:any  =await this.panierServices.findPanierAfterDate(oneWeekAgo);
 // Object to store the counts of each title
 const titleCounts: info = {};
+
 for (const order of cmd) {
     for (const item of order.cartItem as any[]) {
         const title: any = item.data.title;
@@ -102,8 +104,8 @@ for (const order of cmd) {
             return(this.panierServices.updatePanierEncoursPreparation(id))
         
     }
-    @Put('EnAttente/:id')
-    async updateEnAttente(
+    @Put('CmdPassee/:id')
+    async updatePassée(
         @Param('id') id_user:number,
     ):Promise<UpdateResult>{
         console.log({id_user});
@@ -111,7 +113,7 @@ for (const order of cmd) {
             const commande = await this.panierServices.findPanier({where:{ id_user :id_user,etat: 'non payé',etat_Commande:''}})
             console.log({commande});
             
-            return(this.panierServices.updatePanierEnAttente(commande[0].id))
+            return(this.panierServices.updatePanierPassée(commande[0].id))
         
     }
 
@@ -125,7 +127,7 @@ for (const order of cmd) {
         
     }
 
-    @Put('passer/:id')
+    @Put('EncoursLiv/:id')
     async updatePasser(
         @Param('id') id:number,
     ):Promise<UpdateResult>{

@@ -24,6 +24,7 @@ export class UserController {
             @Body('prénom')  prénom:string,
             @Body('email')  email:string,
             @Body('télephone')  télephone:number,
+            @Body('shop')  shop:number,
             @Body('password')  password:string,
             @Body('createdAt')  createdAt:Date,
 
@@ -39,6 +40,7 @@ export class UserController {
                             prénom,
                             email,
                             télephone,
+                            shop,
                             password:hashedPassword,
                             createdAt
                 });
@@ -252,6 +254,24 @@ export class UserController {
             }
             const result = await this.userServices.sendSms(`+216 ${phoneNumber}`, message);
             return { message: 'Message envoyé avec succès', result ,email:user.email};
+        }
+        
+        @Post('saveTel/:id')
+        async saveTel(
+            @Param('id') id:number,
+            @Body() body: { phoneNumber: string}) {
+            const { phoneNumber} = body;
+
+            const user = await this.userServices.findOne({where:{id}});
+
+                if(user){
+                    user.télephone = Number(phoneNumber);
+
+                }
+
+            // Save the updated télephone in user entity
+                await this.userServices.createUser(user);
+            return { message: 'succès'};
         }
         
 
