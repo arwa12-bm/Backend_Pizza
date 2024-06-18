@@ -104,7 +104,7 @@ export class UserController {
             response.cookie('jwt', jwt);
             return response.redirect('http://localhost:3000/');
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             response.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -138,7 +138,7 @@ export class UserController {
             response.cookie('jwt', jwt);
             return response.redirect('http://localhost:3000/');
         } catch (error) {
-            console.error(error);
+            // console.error(error);
             response.status(500).json({ error: 'Internal Server Error' });
         }
     }
@@ -179,7 +179,7 @@ export class UserController {
                 }
                 const user = await this.userServices.findOne({where:{id:data['id']}});
                 const {password,...result} = user;
-                console.log(user)
+                // console.log(user)
                 return result;
             } catch (error) {
                 // Handle the case when the user is not found
@@ -224,7 +224,7 @@ export class UserController {
             const result = await this.userServices.processCheckout(user_id, paymentMethodNonce,TotalAmount);
             return { result };
         } catch (error) {
-            console.error('Error during checkout:', error);
+            // console.error('Error during checkout:', error);
             return { error: error.message || 'Internal Server Error' };
         }
     }

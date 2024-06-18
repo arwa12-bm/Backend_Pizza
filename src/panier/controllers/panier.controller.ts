@@ -43,7 +43,7 @@ export class PanierController {
             @Param('id') id_user:number,
         ){
             try{
-                const commande = await this.panierServices.findPanier({where:{ id_user :id_user,etat: 'payé'}})
+                const commande = await this.panierServices.findPanier({where:{ id_user :id_user}})
                 return commande ;
             }catch(e){
                 return{message:'Get commande error:', e}
